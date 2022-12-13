@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>analyzer module &mdash; READY TRAFFIC ANALYZER 1.0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="analyzer_1920 module" href="analyzer_1920.html" />
+    <link rel="prev" title="Welcome to READY TRAFFIC ANALYZER’s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> READY TRAFFIC ANALYZER
+          </a>
+              <div class="version">
+                1.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">analyzer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzer_1920.html">analyzer_1920 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sort.html">sort module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">READY TRAFFIC ANALYZER</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>analyzer module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/analyzer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-analyzer">
+<span id="analyzer-module"></span><h1>analyzer module<a class="headerlink" href="#module-analyzer" title="Permalink to this headline"></a></h1>
+<p>Videonun analizi, raporlaması ve silinmesi bu modülde yapılır.
+Nesne tanıma bu modülde gerçekleşir, çizgiler ve sayıcılar bu modülde çizilir.
+Bu modül default olarak 10 fps ve 1138x640 çözünürlük değerindedir.</p>
+<p>Bu modülü çalıştırmak için aşağıdaki kod girilir:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="nb">input</span> <span class="n">girdi</span><span class="o">/</span><span class="n">girdivideo</span><span class="o">.</span><span class="n">MP4</span> <span class="o">--</span><span class="n">output</span> <span class="n">cikti</span><span class="o">/</span><span class="n">ciktivideo</span><span class="o">.</span><span class="n">avi</span> <span class="o">--</span><span class="n">yolo</span> <span class="n">yolo</span><span class="o">-</span><span class="n">coco</span>
+</pre></div>
+</div>
+<p>Çizgi koordinatları paint  yardımı ile bulunur
+(x1,y1) , (x2,y2) olacak şekilde aşağıdaki kod ile belirlenir ve Sayıcı tanımlanır.
+Bu koordinatlar 1138X640 Çözünürlüklü görüntü içindir.</p>
+<p>Sort algoritmasından tracker bağlantısı ve sayıcıların tanımlanması da burada gerçekleşir.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tracker</span> <span class="o">=</span> <span class="n">Sort</span><span class="p">()</span>
+<span class="n">memory</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1"># Çizgi çekilecek kordinatları paint  yardımı ile bulup  aşağıya yazıyoruz.</span>
+<span class="c1"># bu koordinatlar 1138X640 Çözünürlüklü görüntü içindir.</span>
+<span class="n">line</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">430</span><span class="p">),</span> <span class="p">(</span><span class="mi">810</span><span class="p">,</span> <span class="mi">420</span><span class="p">)]</span>  <span class="c1"># çizgi 1  sarı,  coordinates from (x1,y1) to (x2,y2)</span>
+<span class="n">line2</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">365</span><span class="p">,</span> <span class="mi">375</span><span class="p">),</span> <span class="p">(</span><span class="mi">365</span><span class="p">,</span> <span class="mi">259</span><span class="p">)]</span>  <span class="c1"># çizgi 2 kırmızı</span>
+<span class="n">line3</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">155</span><span class="p">,</span> <span class="mi">300</span><span class="p">),</span> <span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">260</span><span class="p">)]</span>  <span class="c1"># çizgi 3 mavi</span>
+<span class="n">line4</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">688</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span> <span class="p">(</span><span class="mi">860</span><span class="p">,</span> <span class="mi">190</span><span class="p">)]</span>  <span class="c1"># çizgi 4 turkuaz</span>
+
+
+<span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># sarı çizginin sayıcıları</span>
+<span class="n">carCounter</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">truckCounter</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">otherCounter</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">counter2</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># kırmızı çizginin sayıcıları</span>
+<span class="n">carCounter2</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">truckCounter2</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">otherCounter2</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">counter3</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># mavi çizginin sayıcıları</span>
+<span class="n">carCounter3</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">truckCounter3</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">otherCounter3</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">counter4</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># turkuaz çizginin sayıcıları</span>
+<span class="n">carCounter4</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">truckCounter4</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">otherCounter4</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">counter5</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># yol 1  sayıcısı</span>
+
+<span class="n">counter6</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># yol 2 sayıcısı</span>
+</pre></div>
+</div>
+<p>input değerlerin ayrıştırıldığı yer</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># construct the argument parse and parse the arguments</span>
+    <span class="c1"># input parametrelerinin ayrıştırıldığı yer</span>
+    <span class="n">ap</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="s2">&quot;--input&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># input edilecek videonun adresi</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;path to input video&quot;</span><span class="p">)</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="s2">&quot;--output&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1">#output edilecek videonun adresi ve adı.uzantısı, uzantısı avi</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;path to output video&quot;</span><span class="p">)</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-y&quot;</span><span class="p">,</span> <span class="s2">&quot;--yolo&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># yolonun ağırlık, etiket ve cfg dosyalarının adresi</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;base path to YOLO directory&quot;</span><span class="p">)</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;--confidence&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.47</span><span class="p">,</span>  <span class="c1"># tanımadaki eminlik değeri default&#39;u 0.5&#39;ti</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;minimum probability to filter weak detections&quot;</span><span class="p">)</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="s2">&quot;--threshold&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+                    <span class="c1"># non-maxima suppression için eşik değeri default&#39;u 0.5&#39;ti</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;threshold when applyong non-maxima suppression&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">parse_args</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Modülün işlem süresini tespit için kronometre başlatılır</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">startTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Kesişim fonksiyonu tanımlanır</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Return true if line segments AB and CD intersect</span>
+<span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ccw</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ccw</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ccw</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ccw</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">ccw</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Bu program CPU’da çalışacak şekilde tasarlanmıştır. Eğer GPU’da çalıştıralacak olursa Bu kod bloğundaki
+” index [ln[i - 1] ” kısmı ” index [ln[i[0] - 1] ” şekline getirilmelidir.
+Ayrıca kod bloğunda nesnelerin etiketlerini ve ağırlıklarını yüklüyoruz, nesne işaretlemenin rengini belirliyoruz.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># load the COCO class labels our YOLO model was trained on</span>
+<span class="c1"># nesnelerin etiket isimlerinin olduğu yer</span>
+<span class="n">labelsPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;yolo&quot;</span><span class="p">],</span> <span class="s2">&quot;coco.names&quot;</span><span class="p">])</span>
+<span class="n">LABELS</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">labelsPath</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># initialize a list of colors to represent each possible class label</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">COLORS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint8&quot;</span><span class="p">)</span>
+
+<span class="c1"># derive the paths to the YOLO weights and model configuration</span>
+<span class="c1"># YOLO modelinin weights ve cfg dosyasının olduğu yer</span>
+<span class="n">weightsPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;yolo&quot;</span><span class="p">],</span> <span class="s2">&quot;yolov3.weights&quot;</span><span class="p">])</span>
+<span class="n">configPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;yolo&quot;</span><span class="p">],</span> <span class="s2">&quot;yolov3.cfg&quot;</span><span class="p">])</span>
+
+<span class="c1"># load our YOLO object detector trained on COCO dataset (80 classes)</span>
+<span class="c1"># and determine only the *output* layer names that we need from YOLO</span>
+<span class="c1"># YOLO neural network nesne tanıma için yükleniyor</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] YOLO diskten yükleniyor...&quot;</span><span class="p">)</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">dnn</span><span class="o">.</span><span class="n">readNetFromDarknet</span><span class="p">(</span><span class="n">configPath</span><span class="p">,</span> <span class="n">weightsPath</span><span class="p">)</span>
+<span class="n">ln</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">getLayerNames</span><span class="p">()</span>
+<span class="n">ln</span> <span class="o">=</span> <span class="p">[</span><span class="n">ln</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">getUnconnectedOutLayers</span><span class="p">()]</span>
+<span class="c1"># ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]</span>
+<span class="c1"># [ln[i[0] - 1] Sadece GPU&#39;da kullanılır yoksa index hatası olur.</span>
+<span class="c1"># default&#39;da GPU kullanılıyordu ve index 0&#39;dan başlıyordu</span>
+<span class="c1"># ancak bu projede CPU kullanılmakta ve index 0&#39;dan başlamıyor bu da index hatasına neden oluyor</span>
+<span class="c1"># hata olmaması için index i&#39;den başlıyor.</span>
+</pre></div>
+</div>
+<p>Videonun input edildiği yer</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># initialize the video stream, pointer to output video file, and</span>
+<span class="c1"># frame dimensions</span>
+<span class="n">vs</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">])</span>  <span class="c1"># input video bilgileri opencv tarafından alınıyor</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="n">frameIndex</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># try to determine the total number of frames in the video file</span>
+<span class="c1"># videodaki toplam frame sayısı</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">prop</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cv</span><span class="o">.</span><span class="n">CV_CAP_PROP_FRAME_COUNT</span> <span class="k">if</span> <span class="n">imutils</span><span class="o">.</span><span class="n">is_cv2</span><span class="p">()</span> \
+        <span class="k">else</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_COUNT</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">vs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prop</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Toplam frame sayısı : </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">total</span><span class="p">))</span>
+
+
+<span class="c1"># an error occurred while trying to determine the total</span>
+<span class="c1"># number of frames in the video file</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] could not determine # of frames in video&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] no approx. completion time can be provided&quot;</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>Yol tayini için nesnelerin id’si tutulacak listeleri hazırlıyoruz</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Yol tayini için listeler tanımlıyoruz.</span>
+<span class="n">countedByLine1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">countedByLine2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Görüntünün çekilip, open cv ile işlendikten sonra YOLO tarafından nesnelerin tespit edildiği;
+confidence, class ID ve koordinatlarının belirlediği yer</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># loop over frames from the video file stream</span>
+<span class="c1"># videonun çekildiği video döngüsü</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="c1"># read the next frame from the file</span>
+    <span class="p">(</span><span class="n">grabbed</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="c1"># frame = cv2.resize(frame, (1138, 640))</span>
+
+    <span class="c1"># if the frame was not grabbed, then we have reached the end</span>
+    <span class="c1"># of the stream</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">grabbed</span><span class="p">:</span>
+        <span class="k">break</span>
+
+    <span class="c1"># if the frame dimensions are empty, grab them</span>
+    <span class="k">if</span> <span class="n">W</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">H</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">W</span><span class="p">)</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="c1"># construct a blob from the input frame and then perform a forward</span>
+    <span class="c1"># pass of the YOLO object detector, giving us our bounding boxes</span>
+    <span class="c1"># and associated probabilities</span>
+    <span class="n">blob</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">dnn</span><span class="o">.</span><span class="n">blobFromImage</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">416</span><span class="p">,</span> <span class="mi">416</span><span class="p">),</span>
+                                 <span class="n">swapRB</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">crop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">net</span><span class="o">.</span><span class="n">setInput</span><span class="p">(</span><span class="n">blob</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">layerOutputs</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">ln</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="c1"># initialize our lists of detected bounding boxes, confidences,</span>
+    <span class="c1"># and class IDs, respectively</span>
+    <span class="n">boxes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">confidences</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">classIDs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># loop over each of the layer outputs</span>
+    <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">layerOutputs</span><span class="p">:</span>
+        <span class="c1"># loop over each of the detections</span>
+        <span class="k">for</span> <span class="n">detection</span> <span class="ow">in</span> <span class="n">output</span><span class="p">:</span>
+            <span class="c1"># extract the class ID and confidence (i.e., probability)</span>
+            <span class="c1"># of the current object detection</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">detection</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span>
+            <span class="n">classID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+            <span class="n">confidence</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="n">classID</span><span class="p">]</span>
+
+            <span class="c1"># filter out weak predictions by ensuring the detected</span>
+            <span class="c1"># probability is greater than the minimum probability</span>
+            <span class="k">if</span> <span class="n">confidence</span> <span class="o">&gt;</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">]:</span>
+                <span class="c1"># scale the bounding box coordinates back relative to</span>
+                <span class="c1"># the size of the image, keeping in mind that YOLO</span>
+                <span class="c1"># actually returns the center (x, y)-coordinates of</span>
+                <span class="c1"># the bounding box followed by the boxes&#39; width and</span>
+                <span class="c1"># height</span>
+                <span class="n">box</span> <span class="o">=</span> <span class="n">detection</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">H</span><span class="p">])</span>
+                <span class="p">(</span><span class="n">centerX</span><span class="p">,</span> <span class="n">centerY</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>
+
+                <span class="c1"># use the center (x, y)-coordinates to derive the top</span>
+                <span class="c1"># and and left corner of the bounding box</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerX</span> <span class="o">-</span> <span class="p">(</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">centerY</span> <span class="o">-</span> <span class="p">(</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+
+                <span class="c1"># update our list of bounding box coordinates,</span>
+                <span class="c1"># confidences, and class IDs</span>
+                <span class="n">boxes</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">width</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">height</span><span class="p">)])</span>
+                <span class="n">confidences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">confidence</span><span class="p">))</span>
+                <span class="n">classIDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">classID</span><span class="p">)</span>
+
+    <span class="c1"># apply non-maxima suppression to suppress weak, overlapping</span>
+    <span class="c1"># bounding boxes</span>
+    <span class="n">idxs</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">dnn</span><span class="o">.</span><span class="n">NMSBoxes</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">confidences</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Tespit edilen nesnelerin noktalara işaretlenerek; çizgilerle kesişiminin belirlendiği,
+nesnelerin yol takibinin yapıldığı ve sayıcıların artırıldığı yer</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dets</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idxs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="c1"># loop over the indexes we are keeping</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idxs</span><span class="o">.</span><span class="n">flatten</span><span class="p">():</span>
+        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">boxes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">boxes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">boxes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">boxes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">dets</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">,</span> <span class="n">confidences</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{0:0.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)})</span>
+<span class="n">dets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dets</span><span class="p">)</span>
+<span class="n">tracks</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dets</span><span class="p">)</span>
+
+<span class="n">boxes</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">indexIDs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">c</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">previous</span> <span class="o">=</span> <span class="n">memory</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">memory</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">tracks</span><span class="p">:</span>
+    <span class="n">boxes</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">track</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">track</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">track</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">track</span><span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+    <span class="n">indexIDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">track</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+    <span class="n">memory</span><span class="p">[</span><span class="n">indexIDs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">boxes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">boxes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
+        <span class="c1"># extract the bounding box coordinates</span>
+        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+
+        <span class="c1"># draw a bounding box rectangle and label on the image</span>
+        <span class="c1"># color = [int(c) for c in COLORS[classIDs[i]]]</span>
+        <span class="c1"># cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)</span>
+
+        <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">COLORS</span><span class="p">[</span><span class="n">indexIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">COLORS</span><span class="p">)]]</span>
+        <span class="c1">#cv2.rectangle(frame, (x, y), (w, h), color, 2) # tespit edilen nesnenin çevresine kare çizme fonksiyonu</span>
+
+        <span class="k">if</span> <span class="n">indexIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">previous</span><span class="p">:</span>
+            <span class="n">previous_box</span> <span class="o">=</span> <span class="n">previous</span><span class="p">[</span><span class="n">indexIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">previous_box</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">previous_box</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">h2</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">previous_box</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">previous_box</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+            <span class="n">p0</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="n">p1</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x2</span> <span class="o">+</span> <span class="p">(</span><span class="n">w2</span> <span class="o">-</span> <span class="n">x2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y2</span> <span class="o">+</span> <span class="p">(</span><span class="n">h2</span> <span class="o">-</span> <span class="n">y2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># default 3 tespit edilen nesnenin üzerine nokta koyulması</span>
+
+            <span class="c1"># Sarı çizgi</span>
+            <span class="k">if</span> <span class="n">intersect</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>  <span class="c1"># nokta ile çizgi kesişiyorsa</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span>
+                        <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span><span class="p">):</span>  <span class="c1">#sadece bicycle,car, motorbike,bus,truck sayılır</span>
+                    <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># classIDs[i] = otomobil ise carCounter artar</span>
+                        <span class="n">carCounter</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>  <span class="c1"># classIDs[i] == kamyom ise truckCounter artar</span>
+                        <span class="n">truckCounter</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">otherCounter</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1">#classIDs[i] == bisiklet, motorsiklet ve otobüs ise otherCounter += 1</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;counter 1 = &quot;</span><span class="p">,</span> <span class="n">counter</span><span class="p">,</span> <span class="n">LABELS</span><span class="p">[</span><span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                    <span class="n">countedByLine1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexIDs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>  <span class="c1"># yol tayin için çizgiye değeni liste 1&#39;e ekle</span>
+
+            <span class="c1"># Mavi çizgi</span>
+            <span class="k">if</span> <span class="n">intersect</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">line3</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line3</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span>
+                        <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span><span class="p">):</span>  <span class="c1">#sadece bicycle,car, motorbike,bus,truck sayılır</span>
+                    <span class="n">counter3</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># classIDs[i] = otomobil ise carCounter3 artar</span>
+                        <span class="n">carCounter3</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>  <span class="c1"># classIDs[i] = kamyon ise truckCounter3 artar</span>
+                        <span class="n">truckCounter3</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">otherCounter3</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1">#classIDs[i] = bisiklet,motorsiklet ve otobüs ise otherCounter3 += 1</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;counter 3 = &quot;</span><span class="p">,</span> <span class="n">counter3</span><span class="p">,</span> <span class="n">LABELS</span><span class="p">[</span><span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                    <span class="n">countedByLine2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexIDs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>  <span class="c1"># yol tayin için çizgiye değeni liste 2&#39;ye ekle</span>
+
+            <span class="c1"># Kırmızı çizgi</span>
+            <span class="k">if</span> <span class="n">intersect</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">line2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line2</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span>
+                        <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span><span class="p">):</span>  <span class="c1">#sadece bicycle,car, motorbike,bus,truck sayılır</span>
+                    <span class="n">counter2</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># classIDs[i] = otomobil ise carCounter2 artar</span>
+                        <span class="n">carCounter2</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>  <span class="c1"># classIDs[i] = kamyon ise truckCounter2 artar</span>
+                        <span class="n">truckCounter2</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">otherCounter2</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1">#classIDs[i] = bisiklet,motorsiklet ve otobüs ise otherCounter2 += 1</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;counter 2 = &quot;</span><span class="p">,</span> <span class="n">counter2</span><span class="p">,</span> <span class="n">LABELS</span><span class="p">[</span><span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                    <span class="n">idBul2</span> <span class="o">=</span> <span class="n">indexIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">idBul2</span> <span class="ow">in</span> <span class="n">countedByLine2</span><span class="p">):</span>  <span class="c1"># yol tayin için çizgiye değenin adını liste 2&#39;de ara</span>
+                        <span class="n">counter6</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># Listede varsa bir artır</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;counter 6 = &quot;</span><span class="p">,</span> <span class="n">counter6</span><span class="p">,</span> <span class="n">LABELS</span><span class="p">[</span><span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>  <span class="c1"># Yol 2 consola yazdır</span>
+
+            <span class="c1"># Turkuaz çizgi</span>
+            <span class="k">if</span> <span class="n">intersect</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">line4</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line4</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span>
+                        <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span> <span class="ow">or</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span><span class="p">):</span>  <span class="c1">#sadece bicycle,car, motorbike,bus,truck sayılır</span>
+                    <span class="n">counter4</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># classIDs[i] = otomobil ise carCounter4 artar</span>
+                        <span class="n">carCounter4</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>  <span class="c1"># classIDs[i] = kamyon ise truckCounter4 artar</span>
+                        <span class="n">truckCounter4</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">otherCounter4</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1">#classIDs[i] = bisiklet,motorsiklet ve otobüs ise otherCounter4 += 1</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;counter 4 = &quot;</span><span class="p">,</span> <span class="n">counter4</span><span class="p">,</span> <span class="n">LABELS</span><span class="p">[</span><span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                    <span class="n">idBul</span> <span class="o">=</span> <span class="n">indexIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">idBul</span> <span class="ow">in</span> <span class="n">countedByLine1</span><span class="p">):</span>  <span class="c1"># yol tayin için çizgiye değenin adını liste 1&#39;de ara</span>
+                        <span class="n">counter5</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># listede varsa bir artır</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;counter 5 = &quot;</span><span class="p">,</span> <span class="n">counter5</span><span class="p">,</span> <span class="n">LABELS</span><span class="p">[</span><span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="c1">#yol 1 bilgisini consola yazdır</span>
+
+        <span class="c1"># text = &quot;{}: {:.4f}&quot;.format(LABELS[classIDs[i]], confidences[i])</span>
+        <span class="c1"># tespit edilen nesnenin üzerinde sınıfı ve eminlik değeri yazar</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indexIDs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">LABELS</span><span class="p">[</span><span class="n">classIDs</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+        <span class="c1"># tespit edilen nesnenin üzerinde id ve sınıfı yazar</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">5</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Çizgi ve sayıcıların görüntü üzerine yazıldığı yer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># draw line  # çizgilerin ekranda gösterildiği yer</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># Blue Green Red, Çizgi Kalınlığı</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">line2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">line3</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line3</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">line4</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line4</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># draw counter   #  sayıcıların ekranda gösterildiği yer</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter</span><span class="p">),</span> <span class="p">(</span><span class="mi">830</span><span class="p">,</span> <span class="mi">420</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_DUPLEX</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="c1">#sarı (850,150)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter2</span><span class="p">),</span> <span class="p">(</span><span class="mi">380</span><span class="p">,</span> <span class="mi">230</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_DUPLEX</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="c1">#kırmızı (350,150)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter3</span><span class="p">),</span> <span class="p">(</span><span class="mi">310</span><span class="p">,</span> <span class="mi">245</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_DUPLEX</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="c1">#mavi (100, 150)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter4</span><span class="p">),</span> <span class="p">(</span><span class="mi">860</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_DUPLEX</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="c1">#turkuaz (600,150)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter5</span><span class="p">),</span> <span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="mi">135</span><span class="p">),</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_DUPLEX</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># beyaz (600,150) yön1</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter6</span><span class="p">),</span> <span class="p">(</span><span class="mi">365</span><span class="p">,</span> <span class="mi">189</span><span class="p">),</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_DUPLEX</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># beyaz (600,150) yön2</span>
+</pre></div>
+</div>
+<p>İşlenmiş videoyu kayıt ettiğimiz yer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># saves image file, fotoğraf olarak kayıt etmek istersek</span>
+<span class="c1"># cv2.imwrite(&quot;output/frame-{}.png&quot;.format(frameIndex), frame)</span>
+
+<span class="c1"># check if the video writer is None</span>
+<span class="k">if</span> <span class="n">writer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># initialize our video writer</span>
+    <span class="c1"># cv2.imshow(&quot;Kamera&quot;, frame)</span>
+    <span class="n">fourcc</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s2">&quot;MJPG&quot;</span><span class="p">)</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">],</span> <span class="n">fourcc</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="c1"># default 30 fps idi, input video fps</span>
+                             <span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># some information on processing single frame</span>
+    <span class="c1"># bir frame&#39;nin işlem süresi hakkında bilgilendirmeler</span>
+    <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">elap</span> <span class="o">=</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Tek frame için işlen süresi </span><span class="si">{:.4f}</span><span class="s2"> saniye&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elap</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Tahmini toplam işlem süresi: </span><span class="si">{:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elap</span> <span class="o">*</span> <span class="n">total</span><span class="p">))</span>
+
+<span class="c1"># write the output frame to disk</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Videoyu analiz esnasında ekranda göstermek istenirse aşağıdaki kodun yorumdan çıkarılması gerekir.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># cv2.imshow(&quot;Kamera&quot;, frame)</span>
+<span class="c1"># if cv2.waitKey(1) == 27:</span>
+<span class="c1">#   break</span>
+
+<span class="c1"># cv2.destroyAllWindows()</span>
+</pre></div>
+</div>
+<p>Videonun analiz tarihini kayıt edebilmek için sistemden zaman bilgisini alıp formatlıyoruz.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">an</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>  <span class="c1"># şu an, videonun analiz edildiği tarihi otomatik olarak listenin başına yazmak için.</span>
+<span class="n">videoTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getctime</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">]))</span>
+<span class="n">videoTime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">videoTime</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %b </span><span class="si">%d</span><span class="s2"> %H:%M:%S %Y&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Sonuçların txt dosyasına yazdırıldığı kısım</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># sonuçların yazdırıldığı kısım</span>
+<span class="n">toText</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;AnalizSonucu.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="c1">#sonuçları yeni satır olarak eklemek için append modunda txt dosyası açıyoruz</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Analiz Tarihi = </span><span class="si">{0}</span><span class="s2"> | &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">an</span><span class="p">)))</span>
+
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Sarı Çizgi Toplam Araç = </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">counter</span><span class="p">)))</span>  <span class="c1"># Sarı çizgiden geçen toplam araç sayısı</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Otomobil = </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">carCounter</span><span class="p">)))</span>  <span class="c1"># Sarı çizgiden geçen otomobil sayısı</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Kamyon = </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">truckCounter</span><span class="p">)))</span>  <span class="c1"># sarı çizgiden geçen kamyon sayısı</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Diğer Araçlar = </span><span class="si">{0}</span><span class="s2"> | &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">otherCounter</span><span class="p">)))</span>  <span class="c1"># sarı çizgiden geçen diğer araçların sayısı</span>
+
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Mavi Çizgi Toplam Araç = </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">counter2</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Otomobil = </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">carCounter2</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Kamyon = </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">truckCounter2</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Diğer Araçlar </span><span class="si">{0}</span><span class="s2"> | &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">otherCounter2</span><span class="p">)))</span>
+
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Kırmızı Çizgi Toplam Araç </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">counter3</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Otomobil = </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">carCounter3</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Kamyon = </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">truckCounter3</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Diğer Araçlar </span><span class="si">{0}</span><span class="s2"> | &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">otherCounter3</span><span class="p">)))</span>
+
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Turkuaz Çizgi Toplam Araç </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">counter4</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Otomobil = </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">carCounter4</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Kamyon = </span><span class="si">{0}</span><span class="s2"> - &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">truckCounter4</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Diğer Araçlar </span><span class="si">{0}</span><span class="s2"> | &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">otherCounter4</span><span class="p">)))</span>
+
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Yol 1 = </span><span class="si">{0}</span><span class="s2"> | &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">counter5</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Yol 2 = </span><span class="si">{0}</span><span class="s2"> | &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">counter6</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Video Tarihi </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">videoTime</span><span class="p">)))</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">toText</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>İşlemin bitirildiği ve İşlem süresinin Console ekranına yazdırlıdığı yer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] İşlem bitiriliyor...&quot;</span><span class="p">)</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+<span class="n">vs</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+<span class="n">endTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Toplam işlem süresi: </span><span class="si">{</span><span class="n">endTime</span> <span class="o">-</span> <span class="n">startTime</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># toplam süre consola yazdırılıyor.</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>HATA NOTU!</dt><dd><p>“Eğer Belirtilen modül bulunamadı!” hatası verirse çözüm ilgili modülü yeniden yüklemektir.</p>
+</dd>
+</dl>
+<p>Örnek hatada NumPy yüklü olmasına rağmen erişim prblemi vardı, NumPy “1.21.5” yeniden yüklenince hata giderildi.</p>
+<p>HATA:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Please</span> <span class="n">note</span> <span class="ow">and</span> <span class="n">check</span> <span class="n">the</span> <span class="n">following</span><span class="p">:</span>
+
+<span class="o">*</span> <span class="n">The</span> <span class="n">Python</span> <span class="n">version</span> <span class="ow">is</span><span class="p">:</span> <span class="n">Python3</span><span class="mf">.7</span> <span class="kn">from</span> <span class="s2">&quot;C:/Users/aliozdemir/Trafik_Analiz/Kayittan/venvs/Scripts/python.exe&quot;</span>
+<span class="o">*</span> <span class="n">The</span> <span class="n">NumPy</span> <span class="n">version</span> <span class="ow">is</span><span class="p">:</span> <span class="s2">&quot;1.21.5&quot;</span>
+
+<span class="ow">and</span> <span class="n">make</span> <span class="n">sure</span> <span class="n">that</span> <span class="n">they</span> <span class="n">are</span> <span class="n">the</span> <span class="n">versions</span> <span class="n">you</span> <span class="n">expect</span><span class="o">.</span>
+<span class="n">Please</span> <span class="n">carefully</span> <span class="n">study</span> <span class="n">the</span> <span class="n">documentation</span> <span class="n">linked</span> <span class="n">above</span> <span class="k">for</span> <span class="n">further</span> <span class="n">help</span><span class="o">.</span>
+
+<span class="n">Original</span> <span class="n">error</span> <span class="n">was</span><span class="p">:</span> <span class="n">DLL</span> <span class="n">load</span> <span class="n">failed</span><span class="p">:</span> <span class="n">Belirtilen</span> <span class="n">modül</span> <span class="n">bulunamadı</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>ÇÖZÜM:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="o">--</span><span class="n">force</span><span class="o">-</span><span class="n">reinstall</span> <span class="n">numpy</span><span class="o">==</span><span class="mf">1.21.5</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to READY TRAFFIC ANALYZER’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="analyzer_1920.html" class="btn btn-neutral float-right" title="analyzer_1920 module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
