@@ -12,7 +12,7 @@ GIF
 
 ![Image 3](https://github.com/Azfe38/Traffic_Analyzer_Ready/blob/master/cikti/output_gif.gif)
 
-OpenCV library, YOLO (You Only Look Once) algoritm and SORT (Simple Online and Realtime Tracking) algorithm were used.
+OpenCV library, YOLO (You Only Look Once) algorithm and SORT (Simple Online and Realtime Tracking) algorithm were used.
 
 Documentation
 
